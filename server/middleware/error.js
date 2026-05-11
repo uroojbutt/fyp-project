@@ -83,7 +83,6 @@ const errorHandler = (err, req, res, next) => {
         message,
         ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
     })
-    const errorMessage = err.message ? Object.values(err.errors).map(e => e.message).join(', ') : err.message;
 
 }
 

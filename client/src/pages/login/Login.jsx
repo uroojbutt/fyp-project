@@ -8,17 +8,52 @@ export default function Login() {
     email: '',
     password: '',
   })
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
+    setError('')
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    // TODO: connect to backend API
-    console.log('Login data:', formData)
-    // navigate to dashboard after login
-    // navigate('/dashboard')
+    setLoading(true)
+    setError('')
+
+    try {
+      const res = await fetch('http://localhost:4000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          role: formData.role,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.message || 'Invalid email or password')
+        return
+      }
+
+      // Save token and user info
+      localStorage.setItem('token', data.token)
+      localStorage.setItem('user', JSON.stringify(data.user))
+
+      // Redirect based on role
+      const role = data.user.role
+      if (role === 'admin') navigate('/admin/dashboard')
+      else if (role === 'instructor') navigate('/instructor/dashboard')
+      else navigate('/dashboard')
+
+    } catch (err) {
+      setError('Cannot connect to server. Make sure your backend is running.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -42,7 +77,6 @@ export default function Login() {
 
         {/* Card */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-
           <form onSubmit={handleSubmit} className="space-y-4">
 
             {/* Role */}
@@ -98,24 +132,28 @@ export default function Login() {
                   placeholder-gray-400 focus:outline-none focus:ring-2
                   focus:ring-blue-500 focus:border-transparent"
               />
-              {/* Forgot password */}
               <div className="text-right mt-1">
-                <Link
-                  to="/forgot-password"
-                  className="text-sm text-blue-500 hover:underline"
-                >
+                <Link to="/forgot-password" className="text-sm text-blue-500 hover:underline">
                   Forgot your password?
                 </Link>
               </div>
             </div>
 
+            {/* Error */}
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-md px-3 py-2">
+                {error}
+              </div>
+            )}
+
             {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium
-                py-2 rounded-md text-sm transition-colors duration-200"
+              disabled={loading}
+              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300
+                text-white font-medium py-2 rounded-md text-sm transition-colors duration-200"
             >
-              Sign In
+              {loading ? 'Signing in...' : 'Sign In'}
             </button>
           </form>
         </div>

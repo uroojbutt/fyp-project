@@ -11,21 +11,58 @@ export default function Register() {
     confirmPassword: '',
   })
   const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const [loading, setLoading] = useState(false)
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value })
     setError('')
+    setSuccess('')
   }
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
+
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match')
       return
     }
-    // TODO: connect to backend API
-    console.log('Register data:', formData)
-    // navigate('/login')
+
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters')
+      return
+    }
+
+    setLoading(true)
+    setError('')
+
+    try {
+      const res = await fetch('http://localhost:4000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.fullName,
+          email: formData.email,
+          password: formData.password,
+          role: formData.role,
+        }),
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.message || 'Registration failed. Please try again.')
+        return
+      }
+
+      setSuccess('Account created successfully! Redirecting to login...')
+      setTimeout(() => navigate('/login'), 2000)
+
+    } catch (err) {
+      setError('Cannot connect to server. Make sure your backend is running.')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -113,7 +150,7 @@ export default function Register() {
               <input
                 type="password"
                 name="password"
-                placeholder="Create a password"
+                placeholder="Create a password (min. 8 chars)"
                 value={formData.password}
                 onChange={handleChange}
                 required
@@ -143,16 +180,26 @@ export default function Register() {
 
             {/* Error */}
             {error && (
-              <p className="text-red-500 text-sm">{error}</p>
+              <div className="bg-red-50 border border-red-200 text-red-600 text-sm rounded-md px-3 py-2">
+                {error}
+              </div>
+            )}
+
+            {/* Success */}
+            {success && (
+              <div className="bg-green-50 border border-green-200 text-green-600 text-sm rounded-md px-3 py-2">
+                {success}
+              </div>
             )}
 
             {/* Submit */}
             <button
               type="submit"
-              className="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium
-                py-2 rounded-md text-sm transition-colors duration-200"
+              disabled={loading}
+              className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-blue-300
+                text-white font-medium py-2 rounded-md text-sm transition-colors duration-200"
             >
-              Create Account
+              {loading ? 'Creating account...' : 'Create Account'}
             </button>
 
           </form>

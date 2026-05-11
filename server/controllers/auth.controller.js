@@ -11,7 +11,14 @@ const generateToken = (id) => {
 // ─── REGISTER ───────────────────────────────────────
 export const register = async (req, res) => {
   try {
-    const { fullName, email, password, role } = req.body
+    const { name, email, password, role } = req.body
+
+    // Basic validation (IMPORTANT)
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        message: 'Name, email, and password are required'
+      })
+    }
 
     // Check if user already exists
     const existingUser = await User.findOne({ email })
@@ -19,8 +26,13 @@ export const register = async (req, res) => {
       return res.status(400).json({ message: 'Email already registered' })
     }
 
-    // Create new user
-    const user = await User.create({ fullName, email, password, role })
+    // Create new user (role optional, schema default will handle it)
+    const user = await User.create({
+      name,
+      email,
+      password,
+      role
+    })
 
     // Generate token
     const token = generateToken(user._id)
@@ -30,12 +42,14 @@ export const register = async (req, res) => {
       token,
       user: {
         id: user._id,
-        fullName: user.fullName,
+        name: user.name,
         email: user.email,
         role: user.role,
       },
     })
+
   } catch (error) {
+    console.log("🔥 REGISTER ERROR:", error)
     res.status(500).json({ message: error.message })
   }
 }
@@ -45,21 +59,30 @@ export const login = async (req, res) => {
   try {
     const { email, password, role } = req.body
 
-    // Check if user exists
-    const user = await User.findOne({ email })
+    if (!email || !password) {
+      return res.status(400).json({
+        message: 'Email and password are required'
+      })
+    }
+
+    // Check if user exists (IMPORTANT: include password because select:false)
+    const user = await User.findOne({ email }).select('+password')
+
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' })
     }
 
-    // Check if password matches
+    // Check password
     const isMatch = await user.matchPassword(password)
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid email or password' })
     }
 
-    // Check if role matches
-    if (user.role !== role) {
-      return res.status(401).json({ message: `This account is not registered as ${role}` })
+    // Check role if provided
+    if (role && user.role !== role) {
+      return res.status(401).json({
+        message: `This account is not registered as ${role}`
+      })
     }
 
     // Generate token
@@ -70,17 +93,22 @@ export const login = async (req, res) => {
       token,
       user: {
         id: user._id,
-        fullName: user.fullName,
+        name: user.name,
         email: user.email,
         role: user.role,
       },
     })
+
   } catch (error) {
+    console.log("🔥 LOGIN ERROR:", error)
     res.status(500).json({ message: error.message })
   }
 }
 
 // ─── GET PROFILE ────────────────────────────────────
 export const getMe = async (req, res) => {
-  res.status(200).json({ success: true, user: req.user })
+  res.status(200).json({
+    success: true,
+    user: req.user
+  })
 }

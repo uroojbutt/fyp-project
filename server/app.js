@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser'
 import dotenv from 'dotenv'
 import connectDB from './config/db.js'
 import authRoutes from './routes/auth.routes.js'
+import { errorHandler } from './middleware/error.js'
 
 dotenv.config()
 
@@ -19,6 +20,8 @@ app.use(cors({
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+app.use('/api/auth', authRoutes)
+app.use(errorHandler)
 
 
 export default app;

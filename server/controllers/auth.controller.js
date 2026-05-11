@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken'
-import User from '../models/User.model.js'
+import User from '../models/user-model.js'
 
 // Helper to generate token
 const generateToken = (id) => {
@@ -29,10 +29,10 @@ export const register = async (req, res) => {
       success: true,
       token,
       user: {
-        id:       user._id,
+        id: user._id,
         fullName: user.fullName,
-        email:    user.email,
-        role:     user.role,
+        email: user.email,
+        role: user.role,
       },
     })
   } catch (error) {
@@ -69,10 +69,10 @@ export const login = async (req, res) => {
       success: true,
       token,
       user: {
-        id:       user._id,
+        id: user._id,
         fullName: user.fullName,
-        email:    user.email,
-        role:     user.role,
+        email: user.email,
+        role: user.role,
       },
     })
   } catch (error) {

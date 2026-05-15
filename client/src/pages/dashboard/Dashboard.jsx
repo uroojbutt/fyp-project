@@ -88,7 +88,7 @@ export default function Dashboard() {
               {greeting()}
             </p>
             <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-50">
-              Hello, {user?.name || 'Student'}! 👋
+              Hy, {user?.name || 'Student'}! 👋
             </h1>
             <p className="text-sm text-slate-400 leading-relaxed max-w-md">
               Welcome to your{' '}

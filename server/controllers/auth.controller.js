@@ -11,7 +11,7 @@ const generateToken = (id) => {
 // ─── REGISTER ───────────────────────────────────────
 export const register = async (req, res) => {
   try {
-    const { name, email, password, role } = req.body
+    const { name, email, password } = req.body
 
     // Basic validation (IMPORTANT)
     if (!name || !email || !password) {
@@ -39,7 +39,7 @@ export const register = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      token,
+      token,  
       user: {
         id: user._id,
         name: user.name,
@@ -78,12 +78,6 @@ export const login = async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password' })
     }
 
-    // Check role if provided
-    if (role && user.role !== role) {
-      return res.status(401).json({
-        message: `This account is not registered as ${role}`
-      })
-    }
 
     // Generate token
     const token = generateToken(user._id)

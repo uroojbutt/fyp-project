@@ -1,11 +1,11 @@
-// components/AdminRoute.jsx
-import { Navigate } from 'react-router-dom';
-import { useSelector } from 'react-redux'; // or your auth context
+import { Navigate } from 'react-router-dom'
 
-const AdminRoute = ({ children }) => {
-    const storedUser = localStorage.getItem('user');
-    const user = storedUser ? JSON.parse(storedUser) : null;
-    return user && user.role === 'admin' ? children : <Navigate to="/login" />;
-};
+export default function AdminRoute({ children }) {
+  const user = JSON.parse(localStorage.getItem('user'))
 
-export default AdminRoute;
+  if (!user || user.role !== 'admin') {
+    return <Navigate to="/login" replace />
+  }
+
+  return children
+}

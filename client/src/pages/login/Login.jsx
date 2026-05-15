@@ -28,7 +28,7 @@ export default function Login() {
         body: JSON.stringify({
           email: formData.email,
           password: formData.password,
-          role: formData.role,
+          
         }),
       })
 
@@ -45,7 +45,7 @@ export default function Login() {
 
       // Redirect based on role
       const role = data.user.role
-      if (role === 'admin') navigate('/admin/dashboard')
+      if (role === 'admin') navigate('/admin')
       else if (role === 'instructor') navigate('/instructor/dashboard')
       else navigate('/dashboard')
 

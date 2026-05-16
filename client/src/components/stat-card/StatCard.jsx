@@ -1,20 +1,22 @@
-export default function StatCard({ icon, label, value, color }) {
+export default function StatCard({ icon, label, value, bg, iconColor }) {
   return (
-    <div style={{
-      background: color || '#f0f4ff',
-      borderRadius: '12px',
-      padding: '20px 24px',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '16px',
-      flex: 1,
-      minWidth: '160px'
-    }}>
-      <span style={{ fontSize: '28px' }}>{icon}</span>
+    <div
+      className="relative flex items-center gap-3 p-4 rounded-xl shadow-sm border overflow-hidden"
+      style={{
+        backgroundColor: bg || "#fff",
+        borderColor: "#eef0f5",
+      }}
+    >
+      {/* icon box */}
+      <div className="w-11 h-11 flex items-center justify-center rounded-lg bg-white/60 shadow-sm">
+        <span className={`${iconColor} text-xl`}>{icon}</span>
+      </div>
+
+      {/* text */}
       <div>
-        <div style={{ fontSize: '13px', color: '#666' }}>{label}</div>
-        <div style={{ fontSize: '24px', fontWeight: '700' }}>{value}</div>
+        <div className="text-xs text-gray-600 font-medium">{label}</div>
+        <div className="text-lg font-bold text-gray-900">{value}</div>
       </div>
     </div>
-  )
+  );
 }

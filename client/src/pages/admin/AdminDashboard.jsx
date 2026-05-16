@@ -1,86 +1,33 @@
 import { useState } from 'react'
+import Sidebar from '../../components/side-bar/SideBar'
+import Navbar from '../../components/nav-bar/NavBar'
+import AddStudent from '../../components/add-student/AddStudent'
+import AddTeacher from '../../components/add-teacher/AddTeacher'
 import StatCard from '../../components/stat-card/StatCard'
 import Graph from '../../components/graph/Graph'
 import RecentActivity from '../../components/recent-activity/RecentActivity'
 import {
   FaUserGraduate, FaChalkboardTeacher, FaClock,
-  FaFolderOpen, FaExclamationTriangle, FaTimes, FaPlus
+  FaFolderOpen, FaExclamationTriangle, FaPlus
 } from 'react-icons/fa'
 import { MdFileOpen } from 'react-icons/md'
 
 const TOAST_DURATION = 3000
 
-const Modal = ({ title, onClose, onSubmit, children }) => (
-  <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-    <div className="bg-white rounded-2xl p-8 w-[380px] relative shadow-xl">
-      <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition">
-        <FaTimes size={16} />
-      </button>
-      <h2 className="text-lg font-semibold mb-6">{title}</h2>
-      {children}
-      <div className="flex gap-3 justify-end mt-4">
-        <button onClick={onClose} className="px-5 py-2 rounded-lg border border-gray-200 text-red-500 font-medium hover:bg-gray-50 transition">
-          Cancel
-        </button>
-        <button onClick={onSubmit} className="px-5 py-2 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition">
-          {title}
-        </button>
-      </div>
-    </div>
-  </div>
-)
-
-const inputClass = "w-full border-b border-gray-200 py-2 text-sm outline-none mb-4 bg-transparent focus:border-blue-400 transition"
+// Read logged-in user from localStorage (stored during login)
+const currentUser = (() => {
+  try { return JSON.parse(localStorage.getItem('user') || '{}') }
+  catch { return {} }
+})()
 
 export default function AdminDashboard() {
   const [showAddStudent, setShowAddStudent] = useState(false)
   const [showAddTeacher, setShowAddTeacher] = useState(false)
   const [toast, setToast] = useState(null)
 
-  const [studentForm, setStudentForm] = useState({ name: '', email: '', password: '', department: '' })
-  const [teacherForm, setTeacherForm] = useState({ name: '', email: '', password: '', department: '', expertise: '', maxStudents: 1 })
-
   const showToast = (msg, success = true) => {
     setToast({ msg, success })
     setTimeout(() => setToast(null), TOAST_DURATION)
-  }
-
-  const handleAddStudent = async () => {
-    try {
-      const res = await fetch('http://localhost:4000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...studentForm, role: 'student' })
-      })
-      if (res.ok) {
-        showToast('Student created successfully', true)
-        setShowAddStudent(false)
-        setStudentForm({ name: '', email: '', password: '', department: '' })
-      } else {
-        showToast('Failed to add student', false)
-      }
-    } catch {
-      showToast('Server error', false)
-    }
-  }
-
-  const handleAddTeacher = async () => {
-    try {
-      const res = await fetch('http://localhost:5000/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...teacherForm, role: 'teacher' })
-      })
-      if (res.ok) {
-        showToast('Teacher added successfully', true)
-        setShowAddTeacher(false)
-        setTeacherForm({ name: '', email: '', password: '', department: '', expertise: '', maxStudents: 1 })
-      } else {
-        showToast('Failed to add teacher', false)
-      }
-    } catch {
-      showToast('Server error', false)
-    }
   }
 
   const graphData = [
@@ -95,92 +42,122 @@ export default function AdminDashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-50 p-8">
+    <div className="min-h-screen bg-slate-50 flex">
 
-      {/* Toast */}
-      {toast && (
-        <div className={`fixed bottom-6 right-6 z-[9999] flex items-center gap-3 px-5 py-3 rounded-xl shadow-lg text-white text-sm font-medium transition-all
-          ${toast.success ? 'bg-emerald-500' : 'bg-red-500'}`}>
-          {toast.success ? '✓' : '✕'} {toast.msg}
-        </div>
-      )}
+      {/* Fixed Sidebar */}
+      <Sidebar />
 
-      {/* Header */}
-      <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl px-8 py-7 mb-7 text-white">
-        <h1 className="text-2xl font-bold">Admin Dashboard</h1>
-        <p className="text-sm mt-1 opacity-80">Manage the entire project management system and oversee all activities.</p>
+      {/* Main area — offset from sidebar (52px collapsed) */}
+      <div className="flex-1 ml-[52px] flex flex-col min-h-screen">
+
+        {/* Fixed Navbar */}
+        <Navbar user={currentUser} />
+
+        {/* Page content — pt-14 to clear fixed navbar */}
+        <main className="pt-12 mt-14 p-3 sm:p-5 flex-1 flex flex-col gap-4">
+
+          {/* Toast notification */}
+          {toast && (
+            <div className={`fixed bottom-5 right-5 z-[9999] flex items-center gap-2 px-4 py-2.5
+              rounded-xl shadow-lg text-white text-sm font-medium
+              ${toast.success ? 'bg-emerald-500' : 'bg-red-500'}`}>
+              {toast.success ? '✓' : '✕'} {toast.msg}
+            </div>
+          )}
+
+          {/* ── Header banner ── */}
+          <div className="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl
+                          px-5 sm:px-7 py-4 text-white">
+            <h1 className="text-lg sm:text-xl font-bold">Admin Dashboard</h1>
+            <p className="text-xs sm:text-sm mt-0.5 opacity-80">
+              Manage the entire project management system and oversee all activities.
+            </p>
+          </div>
+
+          {/* ── Stat Cards — 5 columns on lg, 3 on sm, 2 on xs ── */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            <StatCard
+              icon={<FaUserGraduate />}
+              label="Total Students" value="6"
+              color="bg-blue-50" iconColor="text-blue-500"
+              bg="#e0f2fe"
+            />
+            <StatCard
+              icon={<FaChalkboardTeacher />}
+              label="Total Teachers" value="5"
+              color="bg-emerald-50" iconColor="text-emerald-500"
+              bg="#dcfce7"
+            />
+            <StatCard
+              icon={<FaClock />}
+              label="Pending Requests" value="2"
+              color="bg-amber-50" iconColor="text-amber-500"
+               bg="#fef3c7"
+            />
+            <StatCard
+              icon={<FaFolderOpen />}
+              label="Active Projects" value="5"
+              color="bg-yellow-50" iconColor="text-yellow-500"
+              bg="#ffe4e6" 
+            />
+            <StatCard
+              icon={<FaExclamationTriangle />}
+              label="Nearing Deadlines" value="0"
+              color="bg-red-50" iconColor="text-red-400"
+              bg="#fef0f0"
+            />
+          </div>
+
+          {/* ── Graph + Recent Activity (side by side on lg) ── */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-4">
+            <Graph data={graphData} />
+            <RecentActivity activities={activities} />
+          </div>
+
+          {/* ── Quick Actions — 3 full-width equal buttons ── */}
+          <div>
+            <h3 className="font-semibold text-gray-700 text-sm mb-3">Quick Actions</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <button
+                onClick={() => setShowAddStudent(true)}
+                className="flex items-center justify-center gap-2 w-full py-3
+                           bg-blue-500 hover:bg-blue-600 text-white rounded-xl
+                           font-medium text-sm transition"
+              >
+                <FaPlus size={11} /> Add Student
+              </button>
+              <button
+                onClick={() => setShowAddTeacher(true)}
+                className="flex items-center justify-center gap-2 w-full py-3
+                           bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl
+                           font-medium text-sm transition"
+              >
+                <FaPlus size={11} /> Add Teacher
+              </button>
+              <button
+                className="flex items-center justify-center gap-2 w-full py-3
+                           bg-white border border-gray-200 hover:bg-gray-50
+                           text-gray-600 rounded-xl font-medium text-sm transition"
+              >
+                <MdFileOpen size={14} /> View Reports
+              </button>
+            </div>
+          </div>
+        </main>
       </div>
 
-      {/* Stat Cards */}
-      <div className="flex gap-4 mb-7 flex-wrap">
-        <StatCard icon={<FaUserGraduate />} label="Total Students" value="6" color="bg-blue-50" iconColor="text-blue-500" />
-        <StatCard icon={<FaChalkboardTeacher />} label="Total Teachers" value="5" color="bg-emerald-50" iconColor="text-emerald-500" />
-        <StatCard icon={<FaClock />} label="Pending Requests" value="2" color="bg-amber-50" iconColor="text-amber-500" />
-        <StatCard icon={<FaFolderOpen />} label="Active Projects" value="5" color="bg-yellow-50" iconColor="text-yellow-500" />
-        <StatCard icon={<FaExclamationTriangle />} label="Nearing Deadlines" value="0" color="bg-red-50" iconColor="text-red-400" />
-      </div>
-
-      {/* Graph + Activity */}
-      <div className="flex gap-5 mb-7 flex-wrap">
-        <Graph data={graphData} />
-        <RecentActivity activities={activities} />
-      </div>
-
-      {/* Quick Actions */}
-      <div>
-        <h3 className="font-semibold mb-4 text-gray-700">Quick Actions</h3>
-        <div className="flex gap-4 flex-wrap">
-          <button
-            onClick={() => setShowAddStudent(true)}
-            className="flex items-center gap-2 px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium text-sm transition"
-          >
-            <FaPlus size={12} /> Add Student
-          </button>
-          <button
-            onClick={() => setShowAddTeacher(true)}
-            className="flex items-center gap-2 px-6 py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-lg font-medium text-sm transition"
-          >
-            <FaPlus size={12} /> Add Teacher
-          </button>
-        </div>
-      </div>
-
-      {/* Add Student Modal */}
+      {/* Modals */}
       {showAddStudent && (
-        <Modal title="Add Student" onClose={() => setShowAddStudent(false)} onSubmit={handleAddStudent}>
-          <input className={inputClass} placeholder="Full Name" value={studentForm.name} onChange={e => setStudentForm({ ...studentForm, name: e.target.value })} />
-          <input className={inputClass} placeholder="Email" value={studentForm.email} onChange={e => setStudentForm({ ...studentForm, email: e.target.value })} />
-          <input className={inputClass} type="password" placeholder="Password" value={studentForm.password} onChange={e => setStudentForm({ ...studentForm, password: e.target.value })} />
-          <select className={inputClass} value={studentForm.department} onChange={e => setStudentForm({ ...studentForm, department: e.target.value })}>
-            <option value="">Select Department</option>
-            <option>Software Engineering</option>
-            <option>Computer Science</option>
-            <option>Electrical Engineering</option>
-          </select>
-        </Modal>
+        <AddStudent
+          onClose={() => setShowAddStudent(false)}
+          onSuccess={(msg) => showToast(msg, true)}
+        />
       )}
-
-      {/* Add Teacher Modal */}
       {showAddTeacher && (
-        <Modal title="Add Teacher" onClose={() => setShowAddTeacher(false)} onSubmit={handleAddTeacher}>
-          <input className={inputClass} placeholder="Full Name" value={teacherForm.name} onChange={e => setTeacherForm({ ...teacherForm, name: e.target.value })} />
-          <input className={inputClass} placeholder="Email" value={teacherForm.email} onChange={e => setTeacherForm({ ...teacherForm, email: e.target.value })} />
-          <input className={inputClass} type="password" placeholder="Password" value={teacherForm.password} onChange={e => setTeacherForm({ ...teacherForm, password: e.target.value })} />
-          <select className={inputClass} value={teacherForm.department} onChange={e => setTeacherForm({ ...teacherForm, department: e.target.value })}>
-            <option value="">Select Department</option>
-            <option>Software Engineering</option>
-            <option>Computer Science</option>
-            <option>Electrical Engineering</option>
-          </select>
-          <select className={inputClass} value={teacherForm.expertise} onChange={e => setTeacherForm({ ...teacherForm, expertise: e.target.value })}>
-            <option value="">Select Expertise</option>
-            <option>Database Systems</option>
-            <option>Machine Learning</option>
-            <option>Web Development</option>
-            <option>Networking</option>
-          </select>
-          <input className={inputClass} type="number" placeholder="Max Students" min="1" value={teacherForm.maxStudents} onChange={e => setTeacherForm({ ...teacherForm, maxStudents: e.target.value })} />
-        </Modal>
+        <AddTeacher
+          onClose={() => setShowAddTeacher(false)}
+          onSuccess={(msg) => showToast(msg, true)}
+        />
       )}
     </div>
   )

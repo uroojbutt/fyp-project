@@ -31,7 +31,7 @@ export const register = async (req, res) => {
       name,
       email,
       password,
-      role
+      role: req.body.role || "student",
     })
 
     // Generate token

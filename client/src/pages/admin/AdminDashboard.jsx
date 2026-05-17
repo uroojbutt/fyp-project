@@ -42,19 +42,20 @@ export default function AdminDashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
+    
+      <div className="min-h-screen bg-slate-50">
 
       {/* Fixed Sidebar */}
       <Sidebar />
 
       {/* Main area — offset from sidebar (52px collapsed) */}
-      <div className="flex-1 ml-[52px] flex flex-col min-h-screen">
+      <div className="flex-1 ml-[70px] flex flex-col min-h-screen">
 
         {/* Fixed Navbar */}
-        <Navbar user={currentUser} />
+        <Navbar  user={currentUser} />
 
         {/* Page content — pt-14 to clear fixed navbar */}
-        <main className="pt-12 mt-14 p-3 sm:p-5 flex-1 flex flex-col gap-4">
+        <main className="pt-10 mt-10 p-3 sm:p-5 flex-1 flex flex-col gap-4">
 
           {/* Toast notification */}
           {toast && (

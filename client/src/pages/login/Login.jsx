@@ -47,7 +47,7 @@ export default function Login() {
       const role = data.user.role
       if (role === 'admin') navigate('/admin')
       else if (role === 'instructor') navigate('/instructor/dashboard')
-      else navigate('/dashboard')
+      else navigate('/student/dashboard')
 
     } catch (err) {
       setError('Cannot connect to server. Make sure your backend is running.')

@@ -2,7 +2,7 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Login from './pages/login/Login'
 import Register from './pages/sign-up/Signup'
 import ForgotPassword from './pages/forgot-password/ForgotPassword'
-
+import StudentDashboard from './pages/student/StudentDashboard'
 import AdminRoute from './components/admin-route/AdminRoute'
 import AdminDashboard from './pages/admin/AdminDashboard'
 
@@ -20,7 +20,7 @@ export default function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
-
+      <Route path="/student/dashboard" element={<StudentDashboard />} />
 
 
       <Route path="/admin" element={

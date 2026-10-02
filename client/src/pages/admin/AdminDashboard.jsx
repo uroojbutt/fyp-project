@@ -11,6 +11,7 @@ import {
   FaFolderOpen, FaExclamationTriangle, FaPlus
 } from 'react-icons/fa'
 import { MdFileOpen } from 'react-icons/md'
+import ViewReport from '../../components/view-reports/ViewReport'
 
 const TOAST_DURATION = 3000
 
@@ -24,6 +25,8 @@ export default function AdminDashboard() {
   const [showAddStudent, setShowAddStudent] = useState(false)
   const [showAddTeacher, setShowAddTeacher] = useState(false)
   const [toast, setToast] = useState(null)
+  const [showFiles, setShowFiles] = useState(false)
+
 
   const showToast = (msg, success = true) => {
     setToast({ msg, success })
@@ -92,13 +95,13 @@ export default function AdminDashboard() {
               icon={<FaClock />}
               label="Pending Requests" value="2"
               color="bg-amber-50" iconColor="text-amber-500"
-               bg="#fef3c7"
+              bg="#fef3c7"
             />
             <StatCard
               icon={<FaFolderOpen />}
               label="Active Projects" value="5"
               color="bg-yellow-50" iconColor="text-yellow-500"
-              bg="#ffe4e6" 
+              bg="#ffe4e6"
             />
             <StatCard
               icon={<FaExclamationTriangle />}
@@ -122,7 +125,7 @@ export default function AdminDashboard() {
                 onClick={() => setShowAddStudent(true)}
                 className="flex items-center justify-center gap-2 w-full py-3
                            bg-blue-500 hover:bg-blue-600 text-white rounded-xl
-                           font-medium text-sm transition"
+                           font-medium text-sm transition cursor-pointer"
               >
                 <FaPlus size={11} /> Add Student
               </button>
@@ -130,14 +133,20 @@ export default function AdminDashboard() {
                 onClick={() => setShowAddTeacher(true)}
                 className="flex items-center justify-center gap-2 w-full py-3
                            bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl
-                           font-medium text-sm transition"
+                           font-medium text-sm transition cursor-pointer"
               >
                 <FaPlus size={11} /> Add Teacher
               </button>
-              <button
+              {/* <button
                 className="flex items-center justify-center gap-2 w-full py-3
                            bg-white border border-gray-200 hover:bg-gray-50
                            text-gray-600 rounded-xl font-medium text-sm transition"
+              >
+                <MdFileOpen size={14} /> View Reports
+              </button> */}
+              <button
+                onClick={() => setShowFiles(true)}
+                className="flex items-center justify-center gap-2 w-full py-3 ... cursor-pointer"
               >
                 <MdFileOpen size={14} /> View Reports
               </button>
@@ -157,8 +166,10 @@ export default function AdminDashboard() {
         <AddTeacher
           onClose={() => setShowAddTeacher(false)}
           onSuccess={(msg) => showToast(msg, true)}
-        />
-      )}
+        />)}
+        {showFiles &&
+           <ViewReport onClose={() => setShowFiles(false)} />}
+      
     </div>
   )
 }

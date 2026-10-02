@@ -78,11 +78,11 @@ export default function AddTeacher({ onClose, onSuccess }) {
 
         <div className="flex gap-3 justify-end mt-2">
           <button onClick={onClose}
-            className="px-5 py-2 rounded-lg border border-gray-200 text-red-500 font-medium hover:bg-gray-50 transition text-sm">
+            className="px-5 py-2 rounded-lg border border-gray-200 text-red-500 font-medium hover:bg-gray-50 transition text-sm cursor-pointer">
             Cancel
           </button>
           <button onClick={handleSubmit} disabled={loading}
-            className="px-5 py-2 rounded-lg bg-emerald-500 text-white font-medium hover:bg-emerald-600 transition text-sm disabled:opacity-60">
+            className="px-5 py-2 rounded-lg bg-emerald-500 text-white font-medium hover:bg-emerald-600 transition text-sm disabled:opacity-60 cursor-pointer">
             {loading ? 'Adding…' : 'Add Teacher'}
           </button>
         </div>

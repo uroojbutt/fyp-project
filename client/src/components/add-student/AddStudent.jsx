@@ -51,10 +51,15 @@ export default function AddStudent({ onClose, onSuccess }) {
           <p className="text-red-500 text-xs mb-3 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
         )}
 
-        <input className={inputClass} placeholder="Full Name" value={form.name} onChange={set('name')} />
-        <input className={inputClass} placeholder="Email" type="email" value={form.email} onChange={set('email')} />
-        <input className={inputClass} placeholder="Password" type="password" value={form.password} onChange={set('password')} />
-        <select className={inputClass} value={form.department} onChange={set('department')}>
+        <input className={inputClass} name="student-name" placeholder="Full Name"
+          value={form.name} onChange={set('name')} autoComplete="off" />
+
+        <input className={inputClass} name="student-email" placeholder="Email" type="email"
+          value={form.email} onChange={set('email')} autoComplete="off" />
+
+        <input className={inputClass} name="student-password" placeholder="Password" type="password"
+          value={form.password} onChange={set('password')} autoComplete="new-password" />
+        <select className={inputClass} value={form.department} onChange={set('department')} autoComplete='off'>
           <option value="">Select Department</option>
           <option>Software Engineering</option>
           <option>Computer Science</option>

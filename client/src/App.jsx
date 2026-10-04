@@ -4,14 +4,12 @@ import Register from './pages/sign-up/Signup'
 import ForgotPassword from './pages/forgot-password/ForgotPassword'
 
 import AdminRoute from './components/admin-route/AdminRoute'
+import DashboardLayout from './components/layout/DashboardLayout'
+import Sidebar from './components/side-bar/SideBar'
+import { adminLinks } from './components/side-bar-links/SideBarLinks'
+
 import AdminDashboard from './pages/admin/AdminDashboard'
-
-
-// Simple protected route — redirects to /login if no token found
-function ProtectedRoute({ children }) {
-  const token = localStorage.getItem('token')
-  return token ? children : <Navigate to="/login" replace />
-}
+import AdminStudents from './pages/admin/AdminStudents'
 
 export default function App() {
   return (
@@ -21,14 +19,18 @@ export default function App() {
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
 
-
-
-      <Route path="/admin" element={
-        <AdminRoute>
-          <AdminDashboard />
-        </AdminRoute>
-      } />
-
+      {/* Admin area: one guard + one layout, pages render inside <Outlet /> */}
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <DashboardLayout sidebar={<Sidebar links={adminLinks} />} />
+          </AdminRoute>
+        }
+      >
+        <Route index element={<AdminDashboard />} />
+        <Route path="students" element={<AdminStudents />} />
+      </Route>
     </Routes>
   )
 }

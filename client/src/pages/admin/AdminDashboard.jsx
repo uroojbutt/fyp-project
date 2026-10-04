@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import Sidebar from '../../components/side-bar/SideBar'
-import Navbar from '../../components/nav-bar/NavBar'
 import AddStudent from '../../components/add-student/AddStudent'
 import AddTeacher from '../../components/add-teacher/AddTeacher'
 import StatCard from '../../components/stat-card/StatCard'
@@ -14,12 +12,6 @@ import { MdFileOpen } from 'react-icons/md'
 import ViewReport from '../../components/view-reports/ViewReport'
 
 const TOAST_DURATION = 3000
-
-// Read logged-in user from localStorage (stored during login)
-const currentUser = (() => {
-  try { return JSON.parse(localStorage.getItem('user') || '{}') }
-  catch { return {} }
-})()
 
 export default function AdminDashboard() {
   const [showAddStudent, setShowAddStudent] = useState(false)
@@ -45,19 +37,7 @@ export default function AdminDashboard() {
   ]
 
   return (
-    <div className="min-h-screen bg-slate-50 flex">
-
-      {/* Fixed Sidebar */}
-      <Sidebar />
-
-      {/* Main area — offset from sidebar (52px collapsed) */}
-      <div className="flex-1 ml-[52px] flex flex-col min-h-screen">
-
-        {/* Fixed Navbar */}
-        <Navbar user={currentUser} />
-
-        {/* Page content — pt-14 to clear fixed navbar */}
-        <main className="pt-12 mt-14 p-3 sm:p-5 flex-1 flex flex-col gap-4">
+    <>
 
           {/* Toast notification */}
           {toast && (
@@ -152,8 +132,6 @@ export default function AdminDashboard() {
               </button>
             </div>
           </div>
-        </main>
-      </div>
 
       {/* Modals */}
       {showAddStudent && (
@@ -170,6 +148,6 @@ export default function AdminDashboard() {
         {showFiles &&
            <ViewReport onClose={() => setShowFiles(false)} />}
       
-    </div>
+    </>
   )
 }

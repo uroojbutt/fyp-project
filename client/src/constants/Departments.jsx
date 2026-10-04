@@ -1,0 +1,1 @@
+export const DEPARTMENTS = ['Software Engineering', 'Computer Science', 'Electrical Engineering']

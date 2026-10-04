@@ -24,7 +24,7 @@ export default function Navbar({ user }) {
   }
 
   return (
-    <header className="fixed top-0 left-[52px] right-0 h-14 bg-white border-b border-slate-100 z-20
+    <header className="fixed top-0 left-[70px] right-0 h-14 bg-white border-b border-slate-100 z-20
                        flex items-center justify-between px-4 sm:px-6 shadow-sm">
 
       {/* Left: Logo circle + Project Name */}

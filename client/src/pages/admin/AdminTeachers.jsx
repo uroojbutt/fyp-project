@@ -1,12 +1,20 @@
 import { useState, useEffect, useMemo } from 'react'
 import { FaUsers, FaUserCheck, FaBuilding, FaPlus } from 'react-icons/fa'
-import { getTeachers, deleteTeacher } from '../../api/adminApi'
+import { getTeachers, deleteTeacher, updateTeacher } from '../../api/adminApi'
 import StatCard from '../../components/stat-card/StatCard'
 import Toast from '../../components/toast/ToastMsg'
 import AddTeacher from '../../components/add-teacher/AddTeacher'
 import ConfirmDialog from '../../components/confirm-dialogue/ConfirmDialogue'
+import TeacherList from '../../components/list/TeacherList'
 
 const TOAST_DURATION = 3000
+
+// TEMP: remove once your backend has real teachers
+const DUMMY_TEACHERS = [
+  { _id: 'dummy-1', name: 'Dr. Ahmed', email: 'ahmed@university.edu', department: 'Computer Science', expertise: 'Machine Learning', assignedStudents: 4, createdAt: '2026-08-12T09:00:00Z' },
+  { _id: 'dummy-2', name: 'Dr. Fatima', email: 'fatima@university.edu', department: 'Software Engineering', expertise: 'Web Development', assignedStudents: 3, createdAt: '2026-08-20T11:30:00Z' },
+  { _id: 'dummy-3', name: 'Prof. Usman', email: 'usman@university.edu', department: 'Computer Science', expertise: 'Databases', assignedStudents: 2, createdAt: '2026-09-02T08:15:00Z' },
+]
 
 // assignedStudents may be an array of students or a plain number
 const countAssigned = (t) =>
@@ -30,9 +38,11 @@ export default function AdminTeachers() {
   const fetchTeachers = async () => {
     try {
       const { data } = await getTeachers()
-      setTeachers(Array.isArray(data) ? data : data.teachers || [])
+      const list = Array.isArray(data) ? data : data.teachers || []
+      setTeachers(list.length ? list : DUMMY_TEACHERS) // TEMP fallback
     } catch {
-      showToast('Failed to load teachers', false)
+      setTeachers(DUMMY_TEACHERS) // TEMP fallback
+      showToast('Failed to load teachers (showing sample data)', false)
     } finally {
       setLoading(false)
     }
@@ -65,13 +75,36 @@ export default function AdminTeachers() {
     fetchTeachers()
   }
 
+  // Called by DataList's built-in edit modal. Throwing keeps the modal open.
+  const handleSave = async (form) => {
+    const { name, email, department, expertise } = form
+    try {
+      if (String(form._id).startsWith('dummy-')) {
+        // TEMP: dummy rows are updated locally only
+        setTeachers((prev) => prev.map((t) => (t._id === form._id ? { ...t, name, email, department, expertise } : t)))
+      } else {
+        await updateTeacher(form._id, { name, email, department, expertise })
+        fetchTeachers()
+      }
+      showToast('Teacher updated successfully', true)
+    } catch (err) {
+      showToast(err.response?.data?.message || 'Failed to update teacher', false)
+      throw err
+    }
+  }
+
   const confirmDelete = async () => {
     setDeleteLoading(true)
     try {
-      await deleteTeacher(deleting._id)
+      if (String(deleting._id).startsWith('dummy-')) {
+        // TEMP: dummy rows are removed locally only
+        setTeachers((prev) => prev.filter((t) => t._id !== deleting._id))
+      } else {
+        await deleteTeacher(deleting._id)
+        fetchTeachers()
+      }
       showToast('Teacher deleted', true)
       setDeleting(null)
-      fetchTeachers()
     } catch {
       showToast('Delete failed', false)
     } finally {
@@ -118,7 +151,7 @@ export default function AdminTeachers() {
           />
         </div>
         <div>
-          <label className="text-sm font-medium text-gray-700 block">Filter Status</label>
+          <label className="text-sm font-medium text-gray-700 block">Filter by Department</label>
           <select
             value={department}
             onChange={(e) => setDepartment(e.target.value)}
@@ -131,52 +164,12 @@ export default function AdminTeachers() {
       </div>
 
       {/* Teachers list */}
-      <div className="bg-white rounded-xl border border-gray-100 p-5">
-        <h2 className="font-semibold text-gray-800 mb-4">Teachers List</h2>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead>
-              <tr className="bg-slate-50 text-xs uppercase text-gray-500">
-                <th className="px-4 py-3">Teacher Info</th>
-                <th className="px-4 py-3">Department</th>
-                <th className="px-4 py-3">Expertise</th>
-                <th className="px-4 py-3">Join Date</th>
-                <th className="px-4 py-3">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {loading && (
-                <tr><td colSpan="5" className="px-4 py-8 text-center text-gray-400">Loading...</td></tr>
-              )}
-              {!loading && filtered.length === 0 && (
-                <tr><td colSpan="5" className="px-4 py-8 text-center text-gray-400">No teachers found</td></tr>
-              )}
-              {filtered.map((t) => (
-                <tr key={t._id} className="border-t border-gray-100">
-                  <td className="px-4 py-4">
-                    <p className="font-semibold text-gray-800">{t.name}</p>
-                    <p className="text-gray-500">{t.email}</p>
-                  </td>
-                  <td className="px-4 py-4 text-gray-700">{t.department}</td>
-                  <td className="px-4 py-4 text-gray-700">{t.expertise}</td>
-                  <td className="px-4 py-4 text-gray-600">
-                    {t.createdAt ? new Date(t.createdAt).toLocaleString() : '—'}
-                  </td>
-                  <td className="px-4 py-4">
-                    <button className="text-blue-600 font-medium mr-3 cursor-pointer">Edit</button>
-                    <button
-                      onClick={() => setDeleting(t)}
-                      className="text-red-600 font-medium cursor-pointer"
-                    >
-                      Delete
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <TeacherList
+        teachers={filtered}
+        loading={loading}
+        onSave={handleSave}
+        onDelete={setDeleting}
+      />
 
       {/* Modals + toast */}
       {showAdd && <AddTeacher onClose={() => setShowAdd(false)} onSuccess={handleSuccess} />}

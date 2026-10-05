@@ -12,6 +12,7 @@ import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminStudents from './pages/admin/AdminStudents'
 import AdminTeachers from './pages/admin/AdminTeachers'
 import AdminAssignments from './pages/admin/AdminAssignments'
+import AdminDeadlines from './pages/admin/AdminDeadlines'
 
 export default function App() {
   return (
@@ -35,6 +36,7 @@ export default function App() {
         <Route path="students" element={<AdminStudents />} />
         <Route path="teachers" element={<AdminTeachers />} />
         <Route path="assignments" element={<AdminAssignments />} /> 
+        <Route path="deadlines" element={<AdminDeadlines />}/>
       </Route>
     </Routes>
   )

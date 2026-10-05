@@ -1,10 +1,11 @@
 import { useState, useEffect, useMemo } from 'react'
 import { FaUsers, FaUserCheck, FaBuilding, FaPlus } from 'react-icons/fa'
+import { getTeachers, deleteTeacher } from '../../api/adminApi'
 import StatCard from '../../components/stat-card/StatCard'
 import Toast from '../../components/toast/ToastMsg'
 import AddTeacher from '../../components/add-teacher/AddTeacher'
 import ConfirmDialog from '../../components/confirm-dialogue/ConfirmDialogue'
-import API from '../../api/axios'
+
 const TOAST_DURATION = 3000
 
 // assignedStudents may be an array of students or a plain number
@@ -28,9 +29,7 @@ export default function AdminTeachers() {
 
   const fetchTeachers = async () => {
     try {
-      const token = localStorage.getItem('token')
-      const res = await fetch(API, { headers: { Authorization: `Bearer ${token}` } })
-      const data = await res.json()
+      const { data } = await getTeachers()
       setTeachers(Array.isArray(data) ? data : data.teachers || [])
     } catch {
       showToast('Failed to load teachers', false)
@@ -41,7 +40,6 @@ export default function AdminTeachers() {
 
   useEffect(() => { fetchTeachers() }, [])
 
-  // ── Derived values (recalculated automatically when `teachers` changes) ──
   const departments = useMemo(
     () => [...new Set(teachers.map((t) => t.department).filter(Boolean))],
     [teachers]
@@ -70,12 +68,7 @@ export default function AdminTeachers() {
   const confirmDelete = async () => {
     setDeleteLoading(true)
     try {
-      const token = localStorage.getItem('token')
-      const res = await fetch(`${API}/${deleting._id}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      if (!res.ok) throw new Error()
+      await deleteTeacher(deleting._id)
       showToast('Teacher deleted', true)
       setDeleting(null)
       fetchTeachers()
@@ -140,7 +133,6 @@ export default function AdminTeachers() {
       {/* Teachers list */}
       <div className="bg-white rounded-xl border border-gray-100 p-5">
         <h2 className="font-semibold text-gray-800 mb-4">Teachers List</h2>
-
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead>

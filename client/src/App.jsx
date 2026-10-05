@@ -11,6 +11,7 @@ import { adminLinks } from './components/side-bar-links/SideBarLinks'
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminStudents from './pages/admin/AdminStudents'
 import AdminTeachers from './pages/admin/AdminTeachers'
+import AdminAssignments from './pages/admin/AdminAssignments'
 
 export default function App() {
   return (
@@ -33,7 +34,7 @@ export default function App() {
         <Route index element={<AdminDashboard />} />
         <Route path="students" element={<AdminStudents />} />
         <Route path="teachers" element={<AdminTeachers />} />
-
+        <Route path="assignments" element={<AdminAssignments />} /> 
       </Route>
     </Routes>
   )

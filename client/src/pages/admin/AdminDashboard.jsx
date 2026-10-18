@@ -1,6 +1,4 @@
 import { useState } from 'react'
-import Sidebar from '../../components/side-bar/SideBar'
-import Navbar from '../../components/nav-bar/NavBar'
 import AddStudent from '../../components/add-student/AddStudent'
 import AddTeacher from '../../components/add-teacher/AddTeacher'
 import StatCard from '../../components/stat-card/StatCard'
@@ -11,19 +9,16 @@ import {
   FaFolderOpen, FaExclamationTriangle, FaPlus
 } from 'react-icons/fa'
 import { MdFileOpen } from 'react-icons/md'
+import ViewReport from '../../components/view-reports/ViewReport'
 
 const TOAST_DURATION = 3000
-
-// Read logged-in user from localStorage (stored during login)
-const currentUser = (() => {
-  try { return JSON.parse(localStorage.getItem('user') || '{}') }
-  catch { return {} }
-})()
 
 export default function AdminDashboard() {
   const [showAddStudent, setShowAddStudent] = useState(false)
   const [showAddTeacher, setShowAddTeacher] = useState(false)
   const [toast, setToast] = useState(null)
+  const [showFiles, setShowFiles] = useState(false)
+
 
   const showToast = (msg, success = true) => {
     setToast({ msg, success })
@@ -42,20 +37,7 @@ export default function AdminDashboard() {
   ]
 
   return (
-    
-      <div className="min-h-screen bg-slate-50">
-
-      {/* Fixed Sidebar */}
-      <Sidebar />
-
-      {/* Main area — offset from sidebar (52px collapsed) */}
-      <div className="flex-1 ml-[70px] flex flex-col min-h-screen">
-
-        {/* Fixed Navbar */}
-        <Navbar  user={currentUser} />
-
-        {/* Page content — pt-14 to clear fixed navbar */}
-        <main className="pt-10 mt-10 p-3 sm:p-5 flex-1 flex flex-col gap-4">
+    <>
 
           {/* Toast notification */}
           {toast && (
@@ -93,13 +75,13 @@ export default function AdminDashboard() {
               icon={<FaClock />}
               label="Pending Requests" value="2"
               color="bg-amber-50" iconColor="text-amber-500"
-               bg="#fef3c7"
+              bg="#fef3c7"
             />
             <StatCard
               icon={<FaFolderOpen />}
               label="Active Projects" value="5"
               color="bg-yellow-50" iconColor="text-yellow-500"
-              bg="#ffe4e6" 
+              bg="#ffe4e6"
             />
             <StatCard
               icon={<FaExclamationTriangle />}
@@ -123,7 +105,7 @@ export default function AdminDashboard() {
                 onClick={() => setShowAddStudent(true)}
                 className="flex items-center justify-center gap-2 w-full py-3
                            bg-blue-500 hover:bg-blue-600 text-white rounded-xl
-                           font-medium text-sm transition"
+                           font-medium text-sm transition cursor-pointer"
               >
                 <FaPlus size={11} /> Add Student
               </button>
@@ -131,21 +113,25 @@ export default function AdminDashboard() {
                 onClick={() => setShowAddTeacher(true)}
                 className="flex items-center justify-center gap-2 w-full py-3
                            bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl
-                           font-medium text-sm transition"
+                           font-medium text-sm transition cursor-pointer"
               >
                 <FaPlus size={11} /> Add Teacher
               </button>
-              <button
+              {/* <button
                 className="flex items-center justify-center gap-2 w-full py-3
                            bg-white border border-gray-200 hover:bg-gray-50
                            text-gray-600 rounded-xl font-medium text-sm transition"
               >
                 <MdFileOpen size={14} /> View Reports
+              </button> */}
+              <button
+                onClick={() => setShowFiles(true)}
+                className="flex items-center justify-center gap-2 w-full py-3 ... cursor-pointer"
+              >
+                <MdFileOpen size={14} /> View Reports
               </button>
             </div>
           </div>
-        </main>
-      </div>
 
       {/* Modals */}
       {showAddStudent && (
@@ -158,8 +144,10 @@ export default function AdminDashboard() {
         <AddTeacher
           onClose={() => setShowAddTeacher(false)}
           onSuccess={(msg) => showToast(msg, true)}
-        />
-      )}
-    </div>
+        />)}
+        {showFiles &&
+           <ViewReport onClose={() => setShowFiles(false)} />}
+      
+    </>
   )
 }

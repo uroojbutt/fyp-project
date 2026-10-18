@@ -51,10 +51,15 @@ export default function AddStudent({ onClose, onSuccess }) {
           <p className="text-red-500 text-xs mb-3 bg-red-50 px-3 py-2 rounded-lg">{error}</p>
         )}
 
-        <input className={inputClass} placeholder="Full Name" value={form.name} onChange={set('name')} />
-        <input className={inputClass} placeholder="Email" type="email" value={form.email} onChange={set('email')} />
-        <input className={inputClass} placeholder="Password" type="password" value={form.password} onChange={set('password')} />
-        <select className={inputClass} value={form.department} onChange={set('department')}>
+        <input className={inputClass} name="student-name" placeholder="Full Name"
+          value={form.name} onChange={set('name')} autoComplete="off" />
+
+        <input className={inputClass} name="student-email" placeholder="Email" type="email"
+          value={form.email} onChange={set('email')} autoComplete="off" />
+
+        <input className={inputClass} name="student-password" placeholder="Password" type="password"
+          value={form.password} onChange={set('password')} autoComplete="new-password" />
+        <select className={inputClass} value={form.department} onChange={set('department')} autoComplete='off'>
           <option value="">Select Department</option>
           <option>Software Engineering</option>
           <option>Computer Science</option>
@@ -63,11 +68,11 @@ export default function AddStudent({ onClose, onSuccess }) {
 
         <div className="flex gap-3 justify-end mt-2">
           <button onClick={onClose}
-            className="px-5 py-2 rounded-lg border border-gray-200 text-red-500 font-medium hover:bg-gray-50 transition text-sm">
+            className="px-5 py-2 rounded-lg border border-gray-200 text-red-500 font-medium hover:bg-gray-50 transition text-sm cursor-pointer">
             Cancel
           </button>
           <button onClick={handleSubmit} disabled={loading}
-            className="px-5 py-2 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition text-sm disabled:opacity-60">
+            className="px-5 py-2 rounded-lg bg-blue-500 text-white font-medium hover:bg-blue-600 transition text-sm disabled:opacity-60 cursor-pointer">
             {loading ? 'Adding…' : 'Add Student'}
           </button>
         </div>

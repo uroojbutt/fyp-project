@@ -18,7 +18,8 @@ import AdminFiles from './pages/admin/AdminFiles'
 import SubmitProposal from './pages/student/SubmitProposal'
 import UploadFiles from './pages/student/UploadFiles'
 import StudentSupervisor from './pages/student/StudentSupervisor'
-
+import Feedback from './pages/student/Feedback'
+import Notifications from './pages/student/Notifications'
 
 
 export default function App() {
@@ -57,8 +58,9 @@ export default function App() {
         <Route path="submit-proposal" element={<SubmitProposal />} />
         <Route path="upload-files" element={<UploadFiles />} />
         <Route path="supervisor" element={<StudentSupervisor />} />
-        
-       
+        <Route path="feedback" element={<Feedback />} />
+        <Route path="notifications" element={<Notifications />} />
+
       </Route>
     </Routes>
   )

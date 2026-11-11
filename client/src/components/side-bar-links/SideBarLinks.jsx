@@ -31,5 +31,7 @@ export const studentLinks = [
   { to: '/student/submit-proposal', label: 'Submit Proposal', icon: <FaFolderOpen /> },
   { to: '/student/upload-files', label: 'Upload Files', icon: <FaUpload /> },
   { to: '/student/supervisor', label: 'Supervisor', icon: <FaChalkboardTeacher /> },
+  { to: '/student/feedback', label: 'Feedback', icon: <FaRegCommentDots /> },
+  { to: '/student/notifications', label: 'Notifications', icon: <FaRegBell /> },
 ]
 // }

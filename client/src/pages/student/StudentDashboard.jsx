@@ -8,8 +8,11 @@ import StatCard from '../../components/stat-card/StatCard'
 import BaseCard from '../../components/base-card/BaseCard'
 import EmptyState from '../../components/empty-state/EmptyState'
 
-export default function StudentDashboard() {
-  const { currentUser } = useOutletContext()
+export const StudentDashboard = () => {
+  const context = useOutletContext();
+  const currentUser = context?.currentUser;
+
+  if (!currentUser) return <p>Loading...</p>
   const [project, setProject] = useState(null)
   const [feedback, setFeedback] = useState([])
   const [deadlines, setDeadlines] = useState([])
@@ -90,3 +93,4 @@ export default function StudentDashboard() {
     </>
   )
 }
+export default StudentDashboard

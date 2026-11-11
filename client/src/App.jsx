@@ -17,6 +17,9 @@ import AdminFiles from './pages/admin/AdminFiles'
 
 import SubmitProposal from './pages/student/SubmitProposal'
 import UploadFiles from './pages/student/UploadFiles'
+import StudentSupervisor from './pages/student/StudentSupervisor'
+
+
 
 export default function App() {
   return (
@@ -50,9 +53,11 @@ export default function App() {
         path="/student"
         element={<DashboardLayout sidebar={<Sidebar links={studentLinks} />} />}
       >
-        <Route index element={<StudentDashboard />} />
+        <Route path="dashboard" index element={<StudentDashboard />} />
         <Route path="submit-proposal" element={<SubmitProposal />} />
         <Route path="upload-files" element={<UploadFiles />} />
+        <Route path="supervisor" element={<StudentSupervisor />} />
+        
        
       </Route>
     </Routes>

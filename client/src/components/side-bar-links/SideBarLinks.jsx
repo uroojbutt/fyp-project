@@ -3,7 +3,9 @@ import {
   FaCalendarAlt, FaFolder, FaFolderOpen, FaClipboardList,
   FaUpload,
   FaRegCommentDots,
-  FaRegBell
+  FaRegBell,
+  FaClock,
+  FaUserCog
 } from 'react-icons/fa'
 
 // One list per role. To add or change a sidebar icon, edit only this file.
@@ -19,11 +21,10 @@ export const adminLinks = [
 ]
 
 export const teacherLinks = [
-  { to: '/teacher', label: 'Dashboard', icon: <FaHome />, end: true },
-  { to: '/teacher/students', label: 'My Students', icon: <FaUserGraduate /> },
-  { to: '/teacher/requests', label: 'Requests', icon: <FaClipboardList /> },
-  { to: '/teacher/deadlines', label: 'Deadlines', icon: <FaCalendarAlt /> },
-  { to: '/teacher/files', label: 'Files', icon: <FaFolder /> },
+  { to: '/instructor/dashboard', label: 'Dashboard', icon: <FaHome />, end: true },
+  { to: '/instructor/pending-request', label: 'My Students', icon: <FaClock /> },
+  { to: '/instructor/assigned-students', label: 'Requests', icon: <FaUserCog /> },
+  { to: '/instructor/files', label: 'Files', icon: <FaFolder /> },
 ]
 
 export const studentLinks = [

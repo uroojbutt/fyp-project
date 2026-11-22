@@ -6,14 +6,13 @@ import StudentDashboard from './pages/student/StudentDashboard'
 import AdminRoute from './components/admin-route/AdminRoute'
 import DashboardLayout from './components/layout/DashboardLayout'
 import Sidebar from './components/side-bar/SideBar'
-import { adminLinks, studentLinks } from './components/side-bar-links/SideBarLinks'
+import { adminLinks, studentLinks, teacherLinks } from './components/side-bar-links/SideBarLinks'
 
 import AdminDashboard from './pages/admin/AdminDashboard'
 import AdminStudents from './pages/admin/AdminStudents'
 import AdminTeachers from './pages/admin/AdminTeachers'
 import AdminAssignments from './pages/admin/AdminAssignments'
 import AdminDeadlines from './pages/admin/AdminDeadlines'
-import AdminFiles from './pages/admin/AdminFiles'
 
 import SubmitProposal from './pages/student/SubmitProposal'
 import UploadFiles from './pages/student/UploadFiles'
@@ -21,6 +20,11 @@ import StudentSupervisor from './pages/student/StudentSupervisor'
 import Feedback from './pages/student/Feedback'
 import Notifications from './pages/student/Notifications'
 import AdminProjects from './pages/admin/AdminProjects'
+
+import TeacherDashboard from './pages/teacher/TeacherDashboard'
+import PendingRequests from './pages/teacher/PendingRequest'
+import AssignedStudents from './pages/teacher/AssignedStudents'
+import TeacherFiles from './pages/teacher/TeacherFiles'
 
 
 export default function App() {
@@ -61,6 +65,17 @@ export default function App() {
         <Route path="supervisor" element={<StudentSupervisor />} />
         <Route path="feedback" element={<Feedback />} />
         <Route path="notifications" element={<Notifications />} />
+
+      </Route>
+
+      <Route
+        path="/instructor"
+        element={<DashboardLayout sidebar={<Sidebar links={teacherLinks} />} />}
+      >
+        <Route path="dashboard" index element={<TeacherDashboard />} />
+        <Route path="pending-request" index element={<PendingRequests />} />
+        <Route path="assigned-students" index element={<AssignedStudents />} />
+        <Route path="files" index element={<TeacherFiles />} />
 
       </Route>
     </Routes>

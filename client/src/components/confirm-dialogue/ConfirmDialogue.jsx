@@ -1,4 +1,13 @@
-export default function ConfirmDialogue({ title, message, confirmLabel = 'Delete', loading, onConfirm, onCancel }) {
+export default function ConfirmDialogue({
+  title,
+  message,
+  confirmLabel = 'Delete',
+  loadingLabel = 'Deleting…',
+  confirmColor = 'bg-red-500 hover:bg-red-600',
+  loading,
+  onConfirm,
+  onCancel,
+}) {
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
       <div className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl">
@@ -10,8 +19,8 @@ export default function ConfirmDialogue({ title, message, confirmLabel = 'Delete
             Cancel
           </button>
           <button onClick={onConfirm} disabled={loading}
-            className="px-5 py-2 rounded-lg bg-red-500 text-white text-sm font-medium hover:bg-red-600 transition disabled:opacity-60">
-            {loading ? 'Deleting…' : confirmLabel}
+            className={`px-5 py-2 rounded-lg text-white text-sm font-medium transition disabled:opacity-60 ${confirmColor}`}>
+            {loading ? loadingLabel : confirmLabel}
           </button>
         </div>
       </div>

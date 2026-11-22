@@ -15,7 +15,7 @@ export const adminLinks = [
   { to: '/admin/teachers', label: 'Teachers', icon: <FaChalkboardTeacher /> },
   { to: '/admin/assignments', label: 'Assignments', icon: <FaLink /> },
   { to: '/admin/deadlines', label: 'Deadlines', icon: <FaCalendarAlt /> },
-  { to: '/admin/files', label: 'Files', icon: <FaFolder /> },
+  { to: '/admin/projects', label: 'Projects', icon: <FaFolder /> },
 ]
 
 export const teacherLinks = [

@@ -20,6 +20,7 @@ import UploadFiles from './pages/student/UploadFiles'
 import StudentSupervisor from './pages/student/StudentSupervisor'
 import Feedback from './pages/student/Feedback'
 import Notifications from './pages/student/Notifications'
+import AdminProjects from './pages/admin/AdminProjects'
 
 
 export default function App() {
@@ -46,7 +47,7 @@ export default function App() {
         <Route path="teachers" element={<AdminTeachers />} />
         <Route path="assignments" element={<AdminAssignments />} />
         <Route path="deadlines" element={<AdminDeadlines />} />
-        <Route path="files" element={<AdminFiles />} />
+        <Route path="projects" element={<AdminProjects />} />
       </Route>
 
 
